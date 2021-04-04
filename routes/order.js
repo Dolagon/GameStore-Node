@@ -1,19 +1,19 @@
 import express from 'express'
 import Order from './../models/Order'
 import alipaySdk from './../utils/alipay'
-import axios from "axios";
 const AlipayFormData = require('alipay-sdk/lib/form').default
 const router = express.Router({});
 
 // 添加订单
 router.post('/web/xlmc/api/order/post', (req, res, next) => {
-    const {user_id, cart_shop, shop_price, order_code} = req.body;
+    const {user_id, cart_shop, shop_price, order_code, ctime} = req.body;
     if(user_id){
         const order = new Order({
             user_id,
             cart_shop,
             shop_price,
-            order_code
+            order_code,
+            ctime
         });
         order.save((err, result) => {
             if (err) {
