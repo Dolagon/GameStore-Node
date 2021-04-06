@@ -1,6 +1,6 @@
 export default (req, res, next)=>{
     // 1. 过滤所有非后端请求
-    if(req.path.indexOf('/admin/') === -1){ // 没有找到
+    if(req.path.indexOf('/back/') === -1){ // 没有找到
         return next();
     }
 
