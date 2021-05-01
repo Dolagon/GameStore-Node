@@ -1,5 +1,6 @@
 import express from 'express'
 import Product from "../models/Product";
+import Collect from "../models/Collect";
 const router = express.Router({});
 
 // 商品添加
@@ -46,7 +47,7 @@ router.get('/web/xlmc/api/product/total', (req, res) => {
         res.send({
             err_code: 0,
             message: '获取数据失败！'
-        })
+        });
     }
 });
 
@@ -90,6 +91,25 @@ router.get('/web/xlmc/api/product/search/:productId', (req, res, next) => {
             result: docs
         });
     });
+});
+
+// 获取一条商品数据 根据id (restful api)
+router.get('/web/xlmc/api/product/searchItem', (req, res, next) => {
+    let product_id = req.query.product_id;
+    if (product_id) {
+        Product.findById({_id: product_id}).exec((err, result) => {
+            if (err) return next(err);
+            res.send({
+                status: 200,
+                result: result
+            });
+        });
+    } else {
+        res.send({
+            err_code: 0,
+            message: '获取数据失败！'
+        });
+    }
 });
 
 // 根据id修改商品
@@ -158,13 +178,18 @@ router.get('/web/xlmc/api/product/list', (req, res, next) => {
                 data: source
             });
         });
-    } else {
+    } else if(type === '') {
         Product.find().skip((page - 1) * pageSize).limit(pageSize).exec((err, source) => {
             if (err) return next(err);
             res.json({
                 success_code: 200,
                 data: source
             });
+        });
+    } else {
+        res.send({
+            err_code: 0,
+            message: '获取数据失败！'
         });
     }
 });

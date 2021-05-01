@@ -47,6 +47,11 @@ router.post('/web/xlmc/api/collect/inList', (req, res, next) => {
                     success_code: 200,
                     message: '心愿单已存在改商品'
                 });
+            } else {
+                res.send({
+                    success_code: 200,
+                    message: '未收藏改商品'
+                });
             }
         });
     } else {

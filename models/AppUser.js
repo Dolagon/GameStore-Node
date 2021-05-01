@@ -2,16 +2,12 @@ import mongoose from 'mongoose'
 
 // 创建管理员(用户)的模式对象
 const appUserSchema = mongoose.Schema({
-    // 姓名
     real_name: {type: String, default: 'Peko'},
-    // 用户名
     user_name: {type: String, required: false},
-    // 密码
     user_pwd: {type: String, required: false},
-    // 头像
     icon_url: {type: String, default: '20190413_2244_Kiki.png'},
-    // 手机号码
     phone: {type: String, required: false},
+    keywords: {type: Array, required: false},
     // 当前编辑的时间
     l_edit: {type: Date, default: Date.now()},
     // 添加时间
