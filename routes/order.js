@@ -1,13 +1,14 @@
-import express from 'express'
-import Order from './../models/Order'
-import alipaySdk from './../utils/alipay'
-const AlipayFormData = require('alipay-sdk/lib/form').default
+import express from 'express';
+import Order from './../models/Order';
+import alipaySdk from './../utils/alipay';
+
+const AlipayFormData = require('alipay-sdk/lib/form').default;
 const router = express.Router({});
 
 // 添加订单
 router.post('/web/xlmc/api/order/post', (req, res, next) => {
-    const {user_id, cart_shop, shop_price, order_code, ctime} = req.body;
-    if(user_id){
+    const { user_id, cart_shop, shop_price, order_code, ctime } = req.body;
+    if (user_id) {
         const order = new Order({
             user_id,
             cart_shop,
@@ -29,15 +30,15 @@ router.post('/web/xlmc/api/order/post', (req, res, next) => {
                 message: '订单创建成功！'
             });
         });
-    }else {
+    } else {
         return next(Error('非法用户！'));
     }
 });
 // 完成订单
 router.post('/web/xlmc/api/order/change_status', (req, res, next) => {
-    const {user_id, order_code} = req.body;
+    const { user_id, order_code } = req.body;
     if (user_id) {
-        Order.findOne({user_id, order_code}, (err, result) => {
+        Order.findOne({ user_id, order_code }, (err, result) => {
             if (err) return next(Error(err));
             if (result) {
                 result.order_status = 'pay';
@@ -53,7 +54,7 @@ router.post('/web/xlmc/api/order/change_status', (req, res, next) => {
                 res.send({
                     error_code: 0,
                     message: '当前订单不存在'
-                })
+                });
             }
         });
     } else {
@@ -62,10 +63,10 @@ router.post('/web/xlmc/api/order/change_status', (req, res, next) => {
 });
 // 获取指定订单
 router.post('/web/xlmc/api/order/get', (req, res) => {
-    const {user_id, status} = req.body;
-    let params = {user_id};
-    if(status){
-        params = {user_id, order_status: status};
+    const { user_id, status } = req.body;
+    let params = { user_id };
+    if (status) {
+        params = { user_id, order_status: status };
     }
     Order.find(params).exec((err, result) => {
         if (err) {
@@ -79,9 +80,9 @@ router.post('/web/xlmc/api/order/get', (req, res) => {
 });
 // 根据订单号获取订单
 router.post('/web/xlmc/api/order/getById', (req, res) => {
-    const {user_id, order_code} = req.body;
+    const { user_id, order_code } = req.body;
     if (user_id) {
-        Order.findOne({user_id, order_code: order_code}).exec((err, result) => {
+        Order.findOne({ user_id, order_code: order_code }).exec((err, result) => {
             if (err) {
                 return next(err);
             }
@@ -96,8 +97,8 @@ router.post('/web/xlmc/api/order/getById', (req, res) => {
 });
 // 删除指定订单
 router.post('/web/xlmc/api/order/remove', (req, res) => {
-    const {user_id, order_code} = req.body;
-    Order.deleteOne({user_id, order_code: order_code}, err => {  // 条件查询
+    const { user_id, order_code } = req.body;
+    Order.deleteOne({ user_id, order_code: order_code }, err => {  // 条件查询
         if (err) return next(err);
         res.json({
             status: 200,
@@ -110,7 +111,7 @@ router.post('/web/xlmc/api/order/alipay', (req, res) => {
     (async () => {
         // 调用 setMethod 并传入 get，会返回可以跳转到支付页面的 url
         const formData = new AlipayFormData();
-        const {order_code, price, local_url} = req.body;
+        const { order_code, price, local_url } = req.body;
         formData.setMethod('get');
         // 通过 addField 增加参数
         // 在用户支付完成之后，支付宝服务器会根据传入的 notify_url，以 POST 请求的形式将支付结果作为参数通知到商户系统。

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const ProductSchema = mongoose.Schema({
     title: { type: String, required: false },  // 标题

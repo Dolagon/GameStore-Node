@@ -1,6 +1,6 @@
-import Error from './../models/Error'
+import Error from './../models/Error';
 
-export default (error, req, res, next)=>{
+export default (error, req, res, next) => {
     const error_log = new Error({
         // 错误名称
         error_name: error.name,
@@ -10,11 +10,11 @@ export default (error, req, res, next)=>{
         error_stack: error.stack
     });
 
-    error_log.save((err, result)=>{
+    error_log.save((err, result) => {
         res.json({
             status: 500,
             result: '服务器内部错误!',
             message: error.message
-        })
+        });
     });
 };

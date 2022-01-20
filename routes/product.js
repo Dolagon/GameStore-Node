@@ -1,11 +1,25 @@
-import express from 'express'
+import express from 'express';
 import Product from "../models/Product";
 import Collect from "../models/Collect";
+
 const router = express.Router({});
 
 // 商品添加
 router.post('/web/xlmc/api/product/add', (req, res, next) => {
-    const {title, img, ori_price, cur_price, discount, type, developers, publisher, pun_date, language, system, content} = req.body;
+    const {
+        title,
+        img,
+        ori_price,
+        cur_price,
+        discount,
+        type,
+        developers,
+        publisher,
+        pun_date,
+        language,
+        system,
+        content
+    } = req.body;
     const product = new Product({
         title,
         img,
@@ -28,15 +42,15 @@ router.post('/web/xlmc/api/product/add', (req, res, next) => {
             success_code: 200,
             data: result,
             message: '新增成功'
-        })
-    })
+        });
+    });
 });
 
 // 获取所有商品数据 根据分类
 router.get('/web/xlmc/api/product/total', (req, res) => {
     let type = req.query.type;
     if (type) {
-        Product.find({type: type}, 'title img ori_price cur_price discount type developers publisher pun_date language system content').exec((err, result)=>{
+        Product.find({ type: type }, 'title img ori_price cur_price discount type developers publisher pun_date language system content').exec((err, result) => {
             if (err) return err;
             res.json({
                 success_code: 200,
@@ -52,10 +66,10 @@ router.get('/web/xlmc/api/product/total', (req, res) => {
 });
 
 // 根据名称或类型搜索商品
-router.get('/web/xlmc/api/product/searchKeywords', (req, res ,next) => {
+router.get('/web/xlmc/api/product/searchKeywords', (req, res, next) => {
     let keywords = req.query.keywords;
     if (keywords) {
-        Product.find({title: {$regex: new RegExp(keywords.trim(), "i")}}, 'title img ori_price cur_price discount type developers publisher pun_date language system content').exec((err, result)=>{
+        Product.find({ title: { $regex: new RegExp(keywords.trim(), "i") } }, 'title img ori_price cur_price discount type developers publisher pun_date language system content').exec((err, result) => {
             if (err) return err;
             res.json({
                 success_code: 200,
@@ -72,7 +86,7 @@ router.get('/web/xlmc/api/product/searchKeywords', (req, res ,next) => {
 
 // 根据id删除商品
 router.get('/web/xlmc/api/product/remove/:productId', (req, res, next) => {
-    Product.deleteOne({_id: req.params.productId}, (err, result)=>{  // 条件查询
+    Product.deleteOne({ _id: req.params.productId }, (err, result) => {  // 条件查询
         if (err) return next(err);
         console.log(result);
         res.json({
@@ -97,7 +111,7 @@ router.get('/web/xlmc/api/product/search/:productId', (req, res, next) => {
 router.get('/web/xlmc/api/product/searchItem', (req, res, next) => {
     let product_id = req.query.product_id;
     if (product_id) {
-        Product.findById({_id: product_id}).exec((err, result) => {
+        Product.findById({ _id: product_id }).exec((err, result) => {
             if (err) return next(err);
             res.send({
                 status: 200,
@@ -114,7 +128,21 @@ router.get('/web/xlmc/api/product/searchItem', (req, res, next) => {
 
 // 根据id修改商品
 router.post('/web/xlmc/api/product/edit', (req, res, next) => {
-    const { product_id, title, img, ori_price, cur_price, discount, type, developers, publisher, pun_date, language, system, content } = req.body;
+    const {
+        product_id,
+        title,
+        img,
+        ori_price,
+        cur_price,
+        discount,
+        type,
+        developers,
+        publisher,
+        pun_date,
+        language,
+        system,
+        content
+    } = req.body;
     Product.findById(product_id, (err, product) => {
         if (err) return next(err);
         product.title = title;
@@ -142,10 +170,10 @@ router.post('/web/xlmc/api/product/edit', (req, res, next) => {
 });
 
 // 获取总页数
-router.get('/web/xlmc/api/product/page', (req, res ,next) => {
+router.get('/web/xlmc/api/product/page', (req, res, next) => {
     let type = req.query.type;
     if (type) {
-        Product.countDocuments({type: type}, (err, count) => {
+        Product.countDocuments({ type: type }, (err, count) => {
             if (err) return next(err);
             res.json({
                 success_code: 200,
@@ -171,14 +199,14 @@ router.get('/web/xlmc/api/product/list', (req, res, next) => {
     let type = req.query.type;
 
     if (type) {
-        Product.find({type: type}).skip((page - 1) * pageSize).limit(pageSize).exec((err, source) => {
+        Product.find({ type: type }).skip((page - 1) * pageSize).limit(pageSize).exec((err, source) => {
             if (err) return next(err);
             res.json({
                 success_code: 200,
                 data: source
             });
         });
-    } else if(type === '') {
+    } else if (type === '') {
         Product.find().skip((page - 1) * pageSize).limit(pageSize).exec((err, source) => {
             if (err) return next(err);
             res.json({

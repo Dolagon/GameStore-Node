@@ -1,4 +1,5 @@
-import {join} from 'path';
+import { join } from 'path';
+
 export default {
     viewsPath: join(__dirname, '../views'),
     publicPath: join(__dirname, '../public'),
@@ -7,6 +8,6 @@ export default {
     port: 3001,
     secret: 'itlike.com',
     name: 'likeid',
-    maxAge:  1800000,
-    db_url:'mongodb://localhost:27017/shop_g'
-}
+    maxAge: 1800000,
+    db_url: 'mongodb://localhost:27017/shop_g'
+};
